@@ -74,9 +74,9 @@ void setupTelnet() {
   }
 }
 
-oid onTelnetConnect(String ip) {
+void onTelnetConnect(String ip) {
   telnet.println("\nWelcome " + telnet.getIP());
-  telnet.println("(Use ^] + q  to disconnect.)");
+  telnet.println("(Use ? for help)");
 }
 
 void onTelnetDisconnect(String ip) {
