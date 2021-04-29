@@ -161,5 +161,13 @@ public:
 	#define SWC_KEY_POWER 0x80
 
 
+	#define AC_LOWEST_TEMP_C 0.5f
+	#define AC_HIGHEST_TEMP_C 127.0f
+	
+	#define AC_LOWEST_TEMP_F 1.0f
+	#define AC_HIGHEST_TEMP_F 254.0f
+	
+	#define EXTERN_LOWEST_TEMP  -50.0f
+	#define EXTERN_HIGHEST_TEMP 77.5f
 
 
