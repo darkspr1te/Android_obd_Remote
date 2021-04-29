@@ -57,8 +57,14 @@ void setupTelnet() {
       remote->SendButtonCode(VolumeDown);
       telnet.println("CON:>>HU Vol-");
     }
-    
-    
+    if (str == "?") { //help 
+      telnet.println("Commands :\r\n b:<value> Send <value> button to Head Unit use ?b: to see available values");
+      telnet.println("r:<value> Send raw <value> Head Unit (start and chekcsum will be added) use ?r: for help");
+    }
+    if (str == "?b:") { //help 
+      telnet.println("Possible values :\r\n");
+      telnet.println("source vol+ vol-");
+    }
     
     
     
