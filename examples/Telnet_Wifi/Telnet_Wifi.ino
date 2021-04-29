@@ -1,5 +1,5 @@
 #include "ESPTelnet.h"          // https://github.com/LennartHennigs/ESPTelnet
-#include <AndroidPSACANRemote.h>
+#include <JunsunPSACANRemote.h>
 
 #define SERIAL_SPEED    19200
 
@@ -45,10 +45,23 @@ void setupTelnet() {
   telnet.onDisconnect(onTelnetDisconnect);
 
   telnet.onInputReceived([](String str) {
-    if (str == "ping") {
-      telnet.println("> pong");
-      Serial.println("- Telnet: pong");
+    if (str == "b:source") {
+      remote->SendButtonCode(Source);
+      telnet.println("CON:>>HU Source");
     }
+    if (str == "b:vol+") {
+      remote->SendButtonCode(VolumeUp);
+      telnet.println("CON:>>HU Vol+");
+    }
+    if (str == "b:vol-") {
+      remote->SendButtonCode(VolumeDown);
+      telnet.println("CON:>>HU Vol-");
+    }
+    
+    
+    
+    
+    
   });
 
   if (telnet.begin()) {
