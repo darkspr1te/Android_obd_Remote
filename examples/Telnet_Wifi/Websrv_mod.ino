@@ -12,6 +12,9 @@ WiFiClient client = server.available();
     }
 */
     String req = client.readStringUntil('\r');
+    byte addr_start = req.indexOf(' ');
+    byte addr_end = req.indexOf(' ', addr_start + 1);
+    byte addr_request = req.indexOf('?', addr_start + 1);
     req = req.substring(addr_start + 1, addr_end);
     String s;
 
