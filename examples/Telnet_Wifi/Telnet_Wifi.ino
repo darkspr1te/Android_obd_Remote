@@ -4,7 +4,13 @@
 
 // wifi options (SSID, Password, max rery, mdns hostname are in "WIFI_mod.ino"
 
+#if FILESYSTEM == FFat
+#include <FFat.h>
+#endif
+#if FILESYSTEM == SPIFFS
 #include <SPIFFS.h>
+#endif
+
 #define FILESYSTEM SPIFFS
 
 void setup() {
