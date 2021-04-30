@@ -5,6 +5,10 @@ WebServer server(80);
 File fsUploadFile;
 
 void ServerPages() {
+  server.on("/root/format", HTTP_GET, []() {
+    server.send(200, "text/plain", "Formating File System");
+    FILESYSTEM.format();
+  });
   server.on("/list", HTTP_GET, handleFileList);
   //load editor
   server.on("/edit", HTTP_GET, []() {
