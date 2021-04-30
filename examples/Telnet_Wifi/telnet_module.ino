@@ -1,17 +1,10 @@
-#define telnet_mod
+#define telnet_mod 
 #include "ESPTelnet.h"          // https://github.com/LennartHennigs/ESPTelnet
 
 ESPTelnet telnet;
 IPAddress ip;
 
-void setupTelnet() {
-  #ifndef websrv_mod 
-    connectToWiFi(WIFI_SSID, WIFI_PASSWORD);
-      if (isConnected()) {
-      ip = WiFi.localIP();
-    }
-  #endif
-      
+void telent_conf() {      
   telnet.onConnect(onTelnetConnect);
   telnet.onConnectionAttempt(onTelnetConnectionAttempt);
   telnet.onReconnect(onTelnetReconnect);
@@ -44,14 +37,9 @@ void setupTelnet() {
       telnet.println("Possible values :\n");
       telnet.println("source vol+ vol-");
     }
-    
-    
-    
   });
-
-  if (telnet.begin()) {
-  }
 }
+    
 
 
 void onTelnetConnect(String ip) {
@@ -86,4 +74,17 @@ bool connectToWiFi(const char* ssid, const char* password, int max_tries = 20, i
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
   return isConnected();
+}
+
+void setupTelnet() {
+  #ifndef websrv_mod 
+    connectToWiFi(WIFI_SSID, WIFI_PASSWORD);
+      if (isConnected()) {
+      ip = WiFi.localIP();
+    }
+  #endif
+    
+  telent_conf();
+  if (telnet.begin()) {
+  }
 }
