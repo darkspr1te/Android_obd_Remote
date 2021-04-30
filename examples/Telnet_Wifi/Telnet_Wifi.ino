@@ -32,4 +32,12 @@ void loop() {
     telnet.print(Serial.read());
   }
   #endif
+  #if defined(websrv_mod) 
+  #endif
+  #if defined(canbus1_mod) 
+  #endif
+  #if defined(canbus2_mod) 
+  #endif
+  #if defined(Perso_mod)
+  #endif
 }
