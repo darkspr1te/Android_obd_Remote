@@ -1,7 +1,7 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 
-WiFiServer server(80);
+WebServer server(80);
 File fsUploadFile;
 
 void ServerPages() {
@@ -32,7 +32,6 @@ void ServerPages() {
 }
 
 bool handleFileRead(String path) {
-  DBG_OUTPUT_PORT.println("handleFileRead: " + path);
   if (path.endsWith("/")) {
     path += "index.htm";
   }
@@ -106,11 +105,8 @@ void handleFileList() {
     return;
   }
   String path = server.arg("dir");
-  DBG_OUTPUT_PORT.println("handleFileList: " + path);
-
   File root = FILESYSTEM.open(path);
   path = String();
-
   String output = "[";
   if(root.isDirectory()){
       File file = root.openNextFile();
@@ -140,11 +136,9 @@ void handleFileUpload() {
     if (!filename.startsWith("/")) {
       filename = "/" + filename;
     }
-    DBG_OUTPUT_PORT.print("handleFileUpload Name: "); DBG_OUTPUT_PORT.println(filename);
     fsUploadFile = FILESYSTEM.open(filename, "w");
     filename = String();
   } else if (upload.status == UPLOAD_FILE_WRITE) {
-    //DBG_OUTPUT_PORT.print("handleFileUpload Data: "); DBG_OUTPUT_PORT.println(upload.currentSize);
     if (fsUploadFile) {
       fsUploadFile.write(upload.buf, upload.currentSize);
     }
@@ -152,6 +146,5 @@ void handleFileUpload() {
     if (fsUploadFile) {
       fsUploadFile.close();
     }
-    DBG_OUTPUT_PORT.print("handleFileUpload Size: "); DBG_OUTPUT_PORT.println(upload.totalSize);
   }
 }
