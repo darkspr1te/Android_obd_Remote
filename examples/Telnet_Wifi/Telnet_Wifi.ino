@@ -16,12 +16,9 @@ void setup() {
   #endif
   #if defined(Perso_mod)
   #endif
-  #if defined(telnet_mod) 
-  setupTelnet();
+  #if defined(WIFI_mod) 
+ wifi_conf();
   #endif
-  #if defined(websrv_mod) 
-  #endif
-  
 }
 
 void loop() {
@@ -34,13 +31,9 @@ void loop() {
   #endif
   #if defined(Perso_mod)
   #endif
-  #if defined(telnet_mod) 
-  telnet();
-  }
+  #if defined(WIFI_mod) 
+  WIFI_loop();
   #endif
-  #if defined(websrv_mod) 
-  #endif
-  
 }
 
 
