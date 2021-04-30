@@ -4,7 +4,7 @@
 WiFiServer server(80);
 File fsUploadFile;
 
-Void ServerPages() {
+void ServerPages() {
   server.on("/list", HTTP_GET, handleFileList);
   //load editor
   server.on("/edit", HTTP_GET, []() {
@@ -50,11 +50,11 @@ bool handleFileRead(String path) {
   return false;
 }
 
-Void websrv() {
+void websrv() {
     server.handleClient();
 }
 
-Void setupWebServer() {
+void setupWebServer() {
  ServerPages();
  server.begin();
 }
