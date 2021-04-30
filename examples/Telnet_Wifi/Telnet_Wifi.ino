@@ -4,9 +4,12 @@
 
 // wifi options (SSID, Password, max rery, mdns hostname are in "WIFI_mod.ino"
 
+#include <SPIFFS.h>
+#define FILESYSTEM SPIFFS
+
 void setup() {
   #if defined(HUnit_mod) 
-  setupHUnit();
+    setupHUnit();
   #endif
   #if defined(canbus1_mod) 
   #endif
@@ -15,13 +18,14 @@ void setup() {
   #if defined(Perso_mod)
   #endif
   #if defined(WIFI_mod) 
- wifi_conf();
+    wifi_conf();
   #endif
+  FILESYSTEM.begin();
 }
 
 void loop() {
   #if defined(HUnit_mod) 
-  HUnit();
+    HUnit();
   #endif
   #if defined(canbus1_mod) 
   #endif
@@ -30,7 +34,7 @@ void loop() {
   #if defined(Perso_mod)
   #endif
   #if defined(WIFI_mod) 
-  WIFI_loop();
+    WIFI_loop();
   #endif
 }
 
