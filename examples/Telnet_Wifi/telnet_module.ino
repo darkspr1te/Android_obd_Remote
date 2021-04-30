@@ -5,11 +5,13 @@ ESPTelnet telnet;
 IPAddress ip;
 
 void setupTelnet() {
-  connectToWiFi(WIFI_SSID, WIFI_PASSWORD);
-    if (isConnected()) {
-    ip = WiFi.localIP();
+  #ifndef websrv_mod 
+    connectToWiFi(WIFI_SSID, WIFI_PASSWORD);
+      if (isConnected()) {
+      ip = WiFi.localIP();
     }
-    
+  #endif
+      
   telnet.onConnect(onTelnetConnect);
   telnet.onConnectionAttempt(onTelnetConnectionAttempt);
   telnet.onReconnect(onTelnetReconnect);
@@ -31,6 +33,12 @@ void setupTelnet() {
     if (str == "?") { //help 
       telnet.println("Commands :\n b:<value> Send <value> button to Head Unit use ?b: to see available values");
       telnet.println("r:<value> Send raw <value> Head Unit (start and chekcsum will be added) use ?r: for help");
+      telnet.println("t:<number> <value> Send trip data to Head Unit use ?t: for help");
+      telnet.println("a:<values> Send A/C data to Head Unit use ?a: for help");  
+      telnet.println("hm:<value> filter received data by HU by function ");
+      telnet.println("Hm:<value> filter emmited data by HU by function ");
+      telnet.println("cm:<value> filter received data by CAN by function ");
+      telnet.println("Cm:<value> filter emmited data by CAN by function ");
     }
     if (str == "?b:") { //help 
       telnet.println("Possible values :\n");
