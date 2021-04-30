@@ -1,19 +1,7 @@
-#include <JunsunPSACANRemote.h>
-
-#define SERIAL_SPEED    19200
-
-#define WIFI_SSID       "MY SSID"
-#define WIFI_PASSWORD   "MY PASS"
-
-JunsunPSACANRemote* remote;
-
 void setup() {
   #if defined(HUnit_mod) 
   setupHUnit();
   #endif
-  
-  Serial.begin(SERIAL_SPEED);  
-  remote = new JunsunPSACANRemote(Serial);
   #if defined(canbus1_mod) 
   #endif
   #if defined(canbus2_mod) 
