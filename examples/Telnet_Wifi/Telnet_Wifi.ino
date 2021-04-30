@@ -1,3 +1,11 @@
+// remove the modules files you don't use
+// it will compile without them
+
+
+#define WIFI_SSID       "MY SSID"
+#define WIFI_PASSWORD   "MY PASS"
+
+
 void setup() {
   #if defined(HUnit_mod) 
   setupHUnit();
