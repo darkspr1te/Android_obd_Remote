@@ -1,10 +1,8 @@
 // remove the modules files you don't use
-// it will compile without them
+// it will compile without them and free flash space from MCU
+// For exemple if you dont want use WIFI remove WIFI_mod.ino from your sketch folder and wifi will disabled
 
-
-#define WIFI_SSID       "MY SSID"
-#define WIFI_PASSWORD   "MY PASS"
-
+// wifi options (SSID, Password, max rery, mdns hostname are in "WIFI_mod.ino"
 
 void setup() {
   #if defined(HUnit_mod) 
