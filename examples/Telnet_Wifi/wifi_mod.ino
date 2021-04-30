@@ -2,7 +2,7 @@
 
 #define HostName Canbox
 
-#define max_tries 10
+#define max_retries 10
 
 #include <WiFi.h>
 #include <ESPmDNS.h>
@@ -14,7 +14,7 @@ IPAddress ip;
 
 void WIFI_loop() {
   #if defined(telnet_mod) 
-  telnet();
+  telnet.loop();
   #endif
   #if defined(websrv_mod) 
   websrv();
@@ -35,7 +35,7 @@ bool connectToWiFi(const char* ssid, const char* password, int max_tries = 20, i
   WiFi.begin(ssid, password);
   do {
     delay(pause);
-  } while (!isConnected() || i++ < max_tries);
+  } while (!isConnected() || i++ < max_retries);
   WiFi.setAutoReconnect(true);
   WiFi.persistent(true);
   return isConnected();
