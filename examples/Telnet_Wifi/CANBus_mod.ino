@@ -14,19 +14,30 @@ void CAN1_loop() {
      switch (id) {
         case 182: //0B6 rpm speed Fuel consumtion info (50ms)
           if (len == 8) {
-            uint16_t rpm = canMsgRcv.data[0] + canMsgRcv.data[1] * 256; // to be verified
-            
-            
-            if (rpm > 0 ) { // Engine RPM, 0 when the engine is OFF
+            uint16_t tmpval;
+            tmpval = canMsgRcv.data[0] + canMsgRcv.data[1] * 256; // to be verified
+           if (Car.I_rpm != tmpval) {
+            Car.I_rpm = tmpval;
+            H_UPD_I= true;
+           }
+           if (Car.I_rpm > 0 ) { // Engine RPM, 0 when the engine is OFF
               EngineRunning = true;
             } else {
               EngineRunning = false;
             }
-          }
+            tmpval = canMsgRcv.data[2] + canMsgRcv.data[3] * 256; // to be verified divide by 10 for speed 
+           if (Car.I_speed != tmpval) {
+            Car.I_speed = tmpval;
+            H_UPD_I= true;
+           }
         break;
         case 225: //0E1 parktronic
         break;
         case 246: //0F6 bsi TEMP COOLANT ?EXT? reverse gear ignition odometer
+            if (canMsgRcv.data[0] && 16) Car.ign = true; else Car.ign = false;
+            if (canMsgRcv.data[7] && 1) Car.rear = true; else Car.rear = false;
+            Car.Coolant = canMsgRcv.data[1]; // add 39 for °c
+            Car.exttemp = canMsgRcv.data[6]; // divide by 2 and -39.5 for °c
         break;
         case 296: //128 Dashboard lights
         break;
@@ -84,45 +95,31 @@ void CAN1_loop() {
       }
 
       // Position Fan
-      tmpVal = canMsgRcv.data[3];
-
-      if (tmpVal == 0x40) {
-        FootAerator = false;
-        WindShieldAerator = true;
-        CentralAerator = false;
-      } else if (tmpVal == 0x30) {
-        FootAerator = false;
-        WindShieldAerator = false;
-        CentralAerator = true;
-      } else if (tmpVal == 0x20) {
-        FootAerator = true;
-        WindShieldAerator = false;
-        CentralAerator = false;
-      } else if (tmpVal == 0x70) {
-        FootAerator = false;
-        WindShieldAerator = true;
-        CentralAerator = true;
-      } else if (tmpVal == 0x80) {
-        FootAerator = true;
-        WindShieldAerator = true;
-        CentralAerator = true;
-      } else if (tmpVal == 0x50) {
-        FootAerator = true;
-        WindShieldAerator = false;
-        CentralAerator = true;
-      } else if (tmpVal == 0x10) {
-        FootAerator = false;
-        WindShieldAerator = false;
-        CentralAerator = false;
-      } else if (tmpVal == 0x60) {
-        FootAerator = true;
-        WindShieldAerator = true;
-        CentralAerator = false;
-      } else {
-        FootAerator = false;
-        WindShieldAerator = false;
-        CentralAerator = false;
-      }
+      switch (canMsgRcv.data[3]) {
+      case 0x40:
+        Car.AC_DOWN= false;Car.AC_UP= true;Car.AC_FRONT= false;
+      break;
+      case 0x30:
+        Car.AC_DOWN= false;Car.AC_UP= false;Car.AC_FRONT= true;
+      break;y
+      case 0x20:
+        Car.AC_DOWN= true;Car.AC_UP= false;Car.AC_FRONT= false;
+      break;
+      case 0x70:
+        Car.AC_DOWN= false;Car.AC_UP= true;Car.AC_FRONT= true;
+      break;
+      case 0x80:
+        Car.AC_DOWN= true;Car.AC_UP= true;Car.AC_FRONT= true;
+      break;
+      case 0x50:
+        Car.AC_DOWN= true;Car.AC_UP= false;Car.AC_FRONT= true;
+      break;
+      case 0x60:
+        Car.AC_DOWN= true;Car.AC_UP= true;Car.AC_FRONT= false;
+      break;
+      case 0x60:
+        Car.AC_DOWN= false;Car.AC_UP= false;Car.AC_FRONT= false;
+      break;
 
       tmpVal = canMsgRcv.data[4];
       if (tmpVal == 0x10) {
@@ -165,7 +162,9 @@ void CAN1_loop() {
         AutoFan = true;
       }
 
-        if (!FootAerator && !WindShieldAerator && CentralAerator) {
+  }
+/* 2011
+              if (!FootAerator && !WindShieldAerator && CentralAerator) {
           FanPosition = 0x34;
         } else if (FootAerator && WindShieldAerator && CentralAerator) {
           FanPosition = 0x84;
@@ -218,5 +217,4 @@ void CAN1_loop() {
           CAN0.sendMessage( & canMsgSnd);
         }
     
-  }
   }
