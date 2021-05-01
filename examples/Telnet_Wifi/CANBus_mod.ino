@@ -4,31 +4,28 @@
 #define CS_PIN_CAN0 10
 
 MCP2515 CAN0(CS_PIN_CAN0); // CAN-BUS Shield N°1
+struct Canbus_previous_val {
+    byte rpm[2]; // odometer info
+    byte doors;
+    bool ign,ill,rear,brake; // I/O status
+};
 
-
+Canbus_previous_val CAN_OV;
 
 void CAN1_loop() {
   if (CAN0.readMessage( & canMsgRcv) == MCP2515::ERROR_OK) {
-    uint16_t id = canMsgRcv.can_id;
-    uint16_t len = canMsgRcv.can_dlc;
-     switch (id) {
+    uint16_t id = canMsgRcv.can_id; //to be removed
+    uint16_t len = canMsgRcv.can_dlc; //to be removed
+     switch (canMsgRcv.can_id) {
         case 182: //0B6 rpm speed Fuel consumtion info (50ms)
-          if (len == 8) {
-            uint16_t tmpval;
-            tmpval = canMsgRcv.data[0] + canMsgRcv.data[1] * 256; // to be verified
-           if (Car.I_rpm != tmpval) {
-            Car.I_rpm = tmpval;
-            H_UPD_I= true;
-           }
-           if (Car.I_rpm > 0 ) { // Engine RPM, 0 when the engine is OFF
-              EngineRunning = true;
-            } else {
-              EngineRunning = false;
-            }
-            tmpval = canMsgRcv.data[2] + canMsgRcv.data[3] * 256; // to be verified divide by 10 for speed 
-           if (Car.I_speed != tmpval) {
-            Car.I_speed = tmpval;
-            H_UPD_I= true;
+          if (canMsgRcv.can_dlc == 8) {
+            if (( canMsgRcv.data[0] !=  CAN_OV.rpm[0] ) || (canMsgRcv.data[1] != CAN_OV.rpm[1] )) {
+            Car.I_rpm = canMsgRcv.data[0] + canMsgRcv.data[1] * 256; // to be verified
+              if ( Car.I_rpm == 0 )  Car.I_Eng = false; else Car.I_Eng = true;
+            Car.I_speed = canMsgRcv.data[2] + canMsgRcv.data[3] * 256; // to be verified divide by 10 for speed 
+            CAN_OV.rpm[0]= canMsgRcv.data[0];
+            CAN_OV.rpm[1]= canMsgRcv.data[1];
+            Car.H_UPD_I= true;
            }
         break;
         case 225: //0E1 parktronic
@@ -53,15 +50,27 @@ void CAN1_loop() {
         case 543: //21F Radio remote control under the steering wheel
          if (canMsgRcv.data[0]&&1) //forward
          if (canMsgRcv.data[0]&&2) //backward
-         if (canMsgRcv.data[0]&&8) //volume UP
-         if (canMsgRcv.data[0]&&16) //volume DOWN
+         if (canMsgRcv.data[0]&&16) //volume UP
+         if (canMsgRcv.data[0]&&32) //volume DOWN
+         if (canMsgRcv.data[0]&&64) //Source
+         //Car.??? = canMsgRcv.data[1] //scroll value from disk selection
+           
         break;
         case 544: //220 Door status
+         if (canMsgRcv.data[0] !=  CAN_OV.Doors) { 
+          if (canMsgRcv.data[0]&&1) DOOR_FL = true; else DOOR_FL = false;
+          if (canMsgRcv.data[0]&&2) DOOR_FR = true; else DOOR_FR = false;
+          if (canMsgRcv.data[0]&&4) DOOR_BL = true; else DOOR_BL = false;
+          if (canMsgRcv.data[0]&&8) DOOR_BR = true; else DOOR_BR = false;
+          if (canMsgRcv.data[0]&&16) DOOR_TR = true; else DOOR_TR = false;
+          CAN_OV.Doors = canMsgRcv.data[0];
+          Car.H_UPD_DOOR=true;
+         }  
         break;
         case 545: //221 Trip computer info
         break;
         case 464: //1D0 Climate control information
-          if (len == 7 && EngineRunning) { // No fan activated if the engine is not ON on old models
+          if (len == 7 && Car.I_Eng) { // No fan activated if the engine is not ON on old models
             AC_decode_2004();
           }
         break;
