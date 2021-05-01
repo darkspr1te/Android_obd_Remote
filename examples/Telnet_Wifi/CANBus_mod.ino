@@ -6,6 +6,7 @@
 MCP2515 CAN0(CS_PIN_CAN0); // CAN-BUS Shield N°1
 struct Canbus_previous_val {
     byte rpm[2]; // odometer info
+    byte ext_temp;
     byte doors;
     bool ign,ill,rear,brake; // I/O status
 };
@@ -14,10 +15,8 @@ Canbus_previous_val CAN_OV;
 
 void CAN1_loop() {
   if (CAN0.readMessage( & canMsgRcv) == MCP2515::ERROR_OK) {
-    uint16_t id = canMsgRcv.can_id; //to be removed
-    uint16_t len = canMsgRcv.can_dlc; //to be removed
      switch (canMsgRcv.can_id) {
-        case 182: //0B6 rpm speed Fuel consumtion info (50ms)
+        case 182: //0x0B6 rpm speed Fuel consumtion info (50ms)
           if (canMsgRcv.can_dlc == 8) {
             if (( canMsgRcv.data[0] !=  CAN_OV.rpm[0] ) || (canMsgRcv.data[1] != CAN_OV.rpm[1] )) {
             Car.I_rpm = canMsgRcv.data[0] + canMsgRcv.data[1] * 256; // to be verified
@@ -28,26 +27,30 @@ void CAN1_loop() {
             Car.H_UPD_I= true;
            }
         break;
-        case 225: //0E1 parktronic
+        case 225: //0x0E1 parktronic
         break;
-        case 246: //0F6 bsi TEMP COOLANT ?EXT? reverse gear ignition odometer
+        case 246: //0x0F6 bsi TEMP COOLANT ?EXT? reverse gear ignition odometer
             if (canMsgRcv.data[0] && 16) Car.ign = true; else Car.ign = false;
             if (canMsgRcv.data[7] && 1) Car.rear = true; else Car.rear = false;
+            if (canMsgRcv.data[0] !=  CAN_OV.ext_temp) { 
+                Car.exttemp = canMsgRcv.data[6]; // divide by 2 and -39.5 for °c
+                CAN_OV.ext_temp= canMsgRcv.data[6];
+                Car.H_UPD_I=true;
+            }
             Car.Coolant = canMsgRcv.data[1]; // add 39 for °c
-            Car.exttemp = canMsgRcv.data[6]; // divide by 2 and -39.5 for °c
         break;
-        case 296: //128 Dashboard lights
+        case 296: //0x128 Dashboard lights
         break;
-        case 417: //1A1 Informational message
+        case 417: //0x1A1 Informational message
          Car.INF_MSG = canMsgRcv.data[1]; //send as is to hu
          if (canMsgRcv.data[2] == 1) Car.H_UPD_INF = 1; // ambigous
          if (canMsgRcv.data[0] == 0x80) Car.H_UPD_INF = 1;  // ambigous
         break;
-        case 493: //1ED Display conditioning commands
+        case 493: //0x1ED Display conditioning commands
          if (canMsgRcv.data[0] == 0x00) Car.AC_Mono =1; else Car.AC_Mono =0;
          if (canMsgRcv.data[0] == 0x18) Car.AC_OFF =1; else Car.AC_OFF =0;
         break;
-        case 543: //21F Radio remote control under the steering wheel
+        case 543: //0x21F Radio remote control under the steering wheel
          if (canMsgRcv.data[0]&&1) //forward
          if (canMsgRcv.data[0]&&2) //backward
          if (canMsgRcv.data[0]&&16) //volume UP
@@ -56,7 +59,7 @@ void CAN1_loop() {
          //Car.??? = canMsgRcv.data[1] //scroll value from disk selection
            
         break;
-        case 544: //220 Door status
+        case 544: //0x220 Door status
          if (canMsgRcv.data[0] !=  CAN_OV.Doors) { 
           if (canMsgRcv.data[0]&&1) DOOR_FL = true; else DOOR_FL = false;
           if (canMsgRcv.data[0]&&2) DOOR_FR = true; else DOOR_FR = false;
@@ -67,10 +70,23 @@ void CAN1_loop() {
           Car.H_UPD_DOOR=true;
          }  
         break;
-        case 545: //221 Trip computer info
+        case 545: //0x221 Trip computer info
+          if (canMsgRcv.can_dlc == 7) {
+            if (canMsgRcv.data[0]&&16) //trip command button
+            if (canMsgRcv.data[0]&&128) //voice command button
+            Car.T_fuelC=canMsgRcv.data[1]+canMsgRcv.data[2]*256; //divide by 10 for L/100KM
+            Car.T_fuelR=canMsgRcv.data[3]canMsgRcv.data[4]*256;
+            Car.H_UPD_Trip = true;  
+          }
         break;
-        case 464: //1D0 Climate control information
-          if (len == 7 && Car.I_Eng) { // No fan activated if the engine is not ON on old models
+        case 609: //0x261 Trip computer info A
+            Car.TA_Spd=canMsgRcv.data[0];
+            Car.TA_Mil=(canMsgRcv.data[1]+canMsgRcv.data[2]*256)/4;
+            Car.TA_Fuelc=(canMsgRcv.data[3]; //divide by 10 for L/100KM
+            Car.H_UPD_Trip = true;  
+        break;
+        case 464: //0x1D0 Climate control information
+          if (canMsgRcv.can_dlc == 7 && Car.I_Eng) { // No fan activated if the engine is not ON on old models
             AC_decode_2004();
           }
         break;
