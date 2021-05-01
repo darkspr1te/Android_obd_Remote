@@ -13,7 +13,13 @@
 
 #define FILESYSTEM SPIFFS
 
+#define IO_HUenable       //Poweron
+#define IO_HUrear         //rear gear signal
+#define IO_HUbrake        //handbrake signal
+#define IO_HUill          //Illimation signal
+
 void setup() {
+    setup_IO();
   #if defined(HUnit_mod) 
     setupHUnit();
   #endif
@@ -43,7 +49,12 @@ void loop() {
     WIFI_loop();
   #endif
 }
-
+void setup_IO() {
+  pinMode(IO_HUenable,OUTPUT);
+  pinMode(IO_HUrear,OUTPUT);
+  pinMode(IO_HUbrake,OUTPUT);
+  pinMode(IO_HUill,OUTPUT);
+}
 
 void errorMsg(String error, bool restart = true) {
   if (restart) {
