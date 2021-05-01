@@ -87,6 +87,7 @@ void CAN1_loop() {
         break;
         case 464: //0x1D0 Climate control information
           if (canMsgRcv.can_dlc == 7 && Car.I_Eng) { // No fan activated if the engine is not ON on old models
+            if (canMsgRcv.data[0]&&64)   //REAR_WINDSHIELD_HEAT
             AC_decode_2004();
           }
         break;
