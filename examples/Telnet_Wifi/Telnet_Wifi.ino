@@ -18,6 +18,16 @@
 #define IO_HUbrake        //handbrake signal
 #define IO_HUill          //Illimation signal
 
+struct Car {
+    uint16_t I_speed, I_rpm;
+    bool ign,ill,rear,brake;
+    byte AC_L,AC_R,AC_FAN;
+    bool AC_DOWN,AC_UP,AC_FRONT,AC_Recycle,AC_WINDSH,AC_AUTO,AC_COMP,AC_OFF;
+    bool H_UPD_AC,H_UPD_I,H_UPD_IO;
+};
+
+
+
 void setup() {
     setup_IO();
   #if defined(HUnit_mod) 
