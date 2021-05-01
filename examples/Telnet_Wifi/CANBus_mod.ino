@@ -31,11 +31,19 @@ void CAN1_loop() {
         case 296: //128 Dashboard lights
         break;
         case 417: //1A1 Informational message
-         //send as is to hu
+         Car.INF_MSG = canMsgRcv.data[1]; //send as is to hu
+         if (canMsgRcv.data[2] == 1) Car.H_UPD_INF = 1; // ambigous
+         if (canMsgRcv.data[0] == 0x80) Car.H_UPD_INF = 1;  // ambigous
         break;
         case 493: //1ED Display conditioning commands
+         if (canMsgRcv.data[0] == 0x00) Car.AC_Mono =1; else Car.AC_Mono =0;
+         if (canMsgRcv.data[0] == 0x18) Car.AC_OFF =1; else Car.AC_OFF =0;
         break;
         case 543: //21F Radio remote control under the steering wheel
+         if (canMsgRcv.data[0]&&1) //forward
+         if (canMsgRcv.data[0]&&2) //backward
+         if (canMsgRcv.data[0]&&8) //volume UP
+         if (canMsgRcv.data[0]&&16) //volume DOWN
         break;
         case 544: //220 Door status
         break;
