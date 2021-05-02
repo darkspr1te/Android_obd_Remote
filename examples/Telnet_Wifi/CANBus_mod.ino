@@ -62,6 +62,7 @@ void CAN1_loop() {
         break;
         case 296: //0x128 Dashboard lights
         break;
+        /* wheel position to the right ID 162 A2 XX 00 00 00 00 where XX varies 1A, 1B, 1C ..... FE, 00*/
         case 417: //0x1A1 Informational message
          Car.INF_MSG = canMsgRcv.data.u8[1]; //send as is to hu
          if (canMsgRcv.data.u8[2] == 1) Car.H_UPD_INF = 1; // ambigous
@@ -102,7 +103,7 @@ void CAN1_loop() {
           Car.H_UPD_DOOR=true;
          }  
         break;
-        case 545: //0x221 Trip computer info
+        case 545: //0x221 Trip computer info instant
           if (canMsgRcv.FIR.B.DLC == 7) {
             if (canMsgRcv.data.u8[0]&&16) //trip command button
             if (canMsgRcv.data.u8[0]&&128) //voice command button
@@ -117,6 +118,12 @@ void CAN1_loop() {
             Car.TA_Fuelc=canMsgRcv.data.u8[3]; //divide by 10 for L/100KM
             Car.H_UPD_Trip = true;  
         break;
+        case 673: //0x261 Trip computer info B
+            Car.TB_Spd=canMsgRcv.data.u8[0];
+            Car.TB_Mil=(canMsgRcv.data.u8[1]+canMsgRcv.data.u8[2]*256)/4;
+            Car.TB_Fuelc=canMsgRcv.data.u8[3]; //divide by 10 for L/100KM
+            Car.H_UPD_Trip = true;  
+        break;             
 
       /*  case 848: //0x350
            // AC_decode_2010();
@@ -140,12 +147,23 @@ void CAN1_loop() {
         Car.C_UPD_AC=false;
     }
 }
-
+/*
+   // This is sent multiple times deliberately as long as the button is pressed
+        // because sending the frame once isn't enough to trigger the reset
+        // FIXME: we should test explicitely the tripModes because it will currently
+        // reset the second memory if tripMode is equal to any value besides 1
+        byte data[] = {
+            tripMode == 1 ? 0x82 : 0x44, 0x00, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00
+        };
+        CAN.sendMsgBuf(359, 0, 8, data);
+        tripDidReset = true;
+        
+        */
     
-    void  AC_decode_2004() {
-      Car.AC_L = canMsgRcv.data.u8[5];
-      Car.AC_R = canMsgRcv.data.u8[6];
-      Car.AC_FAN = canMsgRcv.data.u8[2];
+    void  AC_decode_2004() { //see 12D too
+      Car.AC_L = canMsgRcv.data.u8[5]; //12D 
+      Car.AC_R = canMsgRcv.data.u8[6]; //12d 4 should be AC controller 64 for high
+      Car.AC_FAN = canMsgRcv.data.u8[2]; //0f:off 00>07 1 >8  /12d 1 0>64 (64=100 dec) maybe %
       // Position Fan
       switch (canMsgRcv.data.u8[3]) {
       case 0x40:
