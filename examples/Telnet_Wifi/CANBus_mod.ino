@@ -272,13 +272,13 @@ void CAN1_setup() {
         
 void cd-change(int count) {
     if (count < 8 & count >0) {
-        for (byte i = 1; i < count; i++) {
+        for (byte i = 1; i <= count; i++) {
             remote->SendButtonCode(NextAlbum);
         }
     }
     count = -count;
     if (count < 8 & count >0) {
-        for (byte i = 1; i < count; i++) {
+        for (byte i = 1; i <= count; i++) {
             remote->SendButtonCode(PreviousAlbum);
         }
     }
