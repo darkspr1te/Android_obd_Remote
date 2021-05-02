@@ -15,11 +15,12 @@
 
 struct Car_data {
     uint16_t I_speed, I_rpm; // odometer info
-    bool ign,ill,rear,brake; // I/O status
-    byte AC_L,AC_R,AC_FAN; // A/C values
-    bool AC_DOWN,AC_UP,AC_FRONT,AC_Recycle,AC_WINDSH,AC_AUTO,AC_COMP,AC_OFF; 
-    bool DOOR_FL,DOOR_FR,DOOR_RL,DOOR_RR,DOOR_TR; //door status
-    bool H_UPD_AC,H_UPD_I,H_UPD_IO,H_UPD_DOOR; //update flag
+    bool ign,ill,rear,brake,I_Eng; // I/O status
+    byte AC_L,AC_R,AC_FAN,exttemp,Coolant,INF_MSG; // A/C values
+    bool AC_DOWN,AC_UP,AC_FRONT,AC_Recycle,AC_WINDSH,AC_AUTO,AC_COMP,AC_OFF,AC_Mono; 
+    bool DOOR_FL,DOOR_FR,DOOR_BL,DOOR_BR,DOOR_TR; //door status
+    bool H_UPD_AC,H_UPD_I,H_UPD_IO,H_UPD_DOOR,H_UPD_INF,H_UPD_Trip; //update flag
+    bool CH_UPD_AC; //update flag
 };
 
 Car_data Car;
