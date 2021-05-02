@@ -146,7 +146,7 @@ void CAN1_loop() {
       case 0x60:
         Car.AC_DOWN= true;Car.AC_UP= true;Car.AC_FRONT= false;
       break;
-      case 0x60:
+      default:
         Car.AC_DOWN= false;Car.AC_UP= false;Car.AC_FRONT= false;
       break;
 
