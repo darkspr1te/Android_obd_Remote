@@ -1,10 +1,10 @@
 #define HUnit_mod 
 #include <JunsunPSACANRemote.h>
 
-#define IO_HUenable       //Car ignition signal
-#define IO_HUrear         //reverse gear signal
-#define IO_HUbrake        //handbrake signal
-#define IO_HUill          //Illumimation signal
+#define IO_HUenable      7 //Car ignition signal
+#define IO_HUrear        7 //reverse gear signal
+#define IO_HUbrake       7 //handbrake signal
+#define IO_HUill         7 //Illumimation signal
 
 #define SERIAL_SPEED    19200
 JunsunPSACANRemote* remote;
@@ -29,9 +29,9 @@ void setup_IO() {
 }
 
 void update_IO() {
-  digitalWrite(IO_HUenable, ign); // put !ign if nedds to reversed
-  digitalWrite(IO_HUrear, rear); // put !rear if nedds to reversed
-  digitalWrite(IO_HUbrake, brake); // put !brake if nedds to reversed
-  digitalWrite(IO_HUill, ill);// put !ill if nedds to reversed
+  digitalWrite(IO_HUenable, Car.ign); // put !ign if nedds to reversed
+  digitalWrite(IO_HUrear, Car.rear); // put !rear if nedds to reversed
+  digitalWrite(IO_HUbrake, Car.brake); // put !brake if nedds to reversed
+  digitalWrite(IO_HUill, Car.ill);// put !ill if nedds to reversed
   Car.H_UPD_IO=false; //updated
 }
