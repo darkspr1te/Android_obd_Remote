@@ -192,63 +192,52 @@ void CAN1_loop() {
       }
 
   }
-/* 2011version  work in progess
-              if (!FootAerator && !WindShieldAerator && CentralAerator) {
-          FanPosition = 0x34;
-        } else if (FootAerator && WindShieldAerator && CentralAerator) {
-          FanPosition = 0x84;
-        } else if (!FootAerator && WindShieldAerator && CentralAerator) {
-          FanPosition = 0x74;
-        } else if (FootAerator && !WindShieldAerator && CentralAerator) {
-          FanPosition = 0x54;
-        } else if (FootAerator && !WindShieldAerator && !CentralAerator) {
-          FanPosition = 0x24;
-        } else if (!FootAerator && WindShieldAerator && !CentralAerator) {
-          FanPosition = 0x44;
-        } else if (FootAerator && WindShieldAerator && !CentralAerator) {
-          FanPosition = 0x64;
-        } else {
-          FanPosition = 0x04; // Nothing
-        }
 
-        if (DeMist) {
-          FanSpeed = 0x10;
-          FanPosition = FanPosition + 16;
-        } else if (AutoFan) {
-          FanSpeed = 0x10;
-        }
-
-        if (FanOff) {
-          AirConditioningON = false;
-          FanSpeed = 0x41;
-          LeftTemp = 0x00;
-          RightTemp = 0x00;
-          FanPosition = 0x04;
-        }
-
-        if (AirConditioningON) {
-          canMsgSnd.data.u8[0] = 0x01; // A/C ON - Auto Soft : "00" / Auto Normal "01" / Auto Fast "02"
-        } else {
-          canMsgSnd.data.u8[0] = 0x09; // A/C OFF - Auto Soft : "08" / Auto Normal "09" / Auto Fast "0A"
-        }
-
-        canMsgSnd.data.u8[1] = 0x00;
-        canMsgSnd.data.u8[2] = 0x00;
-        canMsgSnd.data.u8[3] = LeftTemp;
-        canMsgSnd.data.u8[4] = RightTemp;
-        canMsgSnd.data.u8[5] = FanSpeed;
-        canMsgSnd.data.u8[6] = FanPosition;
-        canMsgSnd.data.u8[7] = 0x00;
-        canMsgSnd.can_id = 0x350;
-        canMsgSnd.can_dlc = 8;
-        CAN1.sendMessage( & canMsgSnd);
-        if (Send_CAN2010_ForgedMessages) {
-          CAN0.sendMessage( & canMsgSnd);
-        }
-    
-  }
-
-*/
+void  AC_decode_2010() {
+      LeftTemp = canMsgRcv.data.u8[3];
+      RightTemp = canMsgRcv.data.u8[4];
+      FanSpeed = canMsgSnd.data.u8[5];// Fan Speed BSI_2010 = "41" (Off) > "49" (Full speed)
+      if (canMsgRcv.data.u8[0]&&8) //AirConditioningON
+      if (canMsgRcv.data.u8[0]&&1) //Auto normal
+      if (canMsgRcv.data.u8[0]&&2) //Auto fast
+      if (!anMsgRcv.data.u8[0]&&3) //Auto soft
+          
+      FanOff = false;
+      // Fan Speed BSI_2010 = "41" (Off) > "49" (Full speed)
+      tmpVal = canMsgRcv.data.u8[2];
+      if (tmpVal == 15) {
+        FanOff = true;
+        FanSpeed = 0x41;
+      } else {
+        FanSpeed = (tmpVal + 66);
+      }
+     switch (canMsgRcv.data.u8[6]) {
+      case 0x44:
+        Car.AC_DOWN= false;Car.AC_UP= true;Car.AC_FRONT= false;
+      break;
+      case 0x34:
+        Car.AC_DOWN= false;Car.AC_UP= false;Car.AC_FRONT= true;
+      break;y
+      case 0x24:
+        Car.AC_DOWN= true;Car.AC_UP= false;Car.AC_FRONT= false;
+      break;
+      case 0x74:
+        Car.AC_DOWN= false;Car.AC_UP= true;Car.AC_FRONT= true;
+      break;
+      case 0x84:
+        Car.AC_DOWN= true;Car.AC_UP= true;Car.AC_FRONT= true;
+      break;
+      case 0x54:
+        Car.AC_DOWN= true;Car.AC_UP= false;Car.AC_FRONT= true;
+      break;
+      case 0x64:
+        Car.AC_DOWN= true;Car.AC_UP= true;Car.AC_FRONT= false;
+      break;
+      default:
+        Car.AC_DOWN= false;Car.AC_UP= false;Car.AC_FRONT= false;
+      break;
+     }
+}
 
 void CAN1_setup() {
   CAN_cfg.speed = CAN_SPEED_125KBPS;
