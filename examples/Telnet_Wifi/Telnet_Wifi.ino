@@ -13,7 +13,7 @@
 
 #define FILESYSTEM SPIFFS
 
-struct Car {
+struct Car_data {
     uint16_t I_speed, I_rpm; // odometer info
     bool ign,ill,rear,brake; // I/O status
     byte AC_L,AC_R,AC_FAN; // A/C values
@@ -22,17 +22,21 @@ struct Car {
     bool H_UPD_AC,H_UPD_I,H_UPD_IO,H_UPD_DOOR; //update flag
 };
 
+Car_data Car;
 
 
 void setup() {
   #if defined(HUnit_mod) 
     setupHUnit();
   #endif
-  #if defined(canbus1_mod) 
+  #if defined(canbus1_mod)
+    CAN1_setup();
   #endif
-  #if defined(canbus2_mod) 
+  #if defined(canbus2_mod)
+    CAN2_setup();
   #endif
   #if defined(Perso_mod)
+    Perso_setup();
   #endif
   #if defined(WIFI_mod) 
     wifi_conf();
@@ -44,11 +48,14 @@ void loop() {
   #if defined(HUnit_mod) 
     HUnit();
   #endif
-  #if defined(canbus1_mod) 
+  #if defined(canbus1_mod)
+    CAN1_loop();
   #endif
-  #if defined(canbus2_mod) 
+  #if defined(canbus2_mod)
+    CAN2_loop();
   #endif
   #if defined(Perso_mod)
+    Perso_loop();
   #endif
   #if defined(WIFI_mod) 
     WIFI_loop();
