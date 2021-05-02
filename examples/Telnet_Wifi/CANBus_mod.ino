@@ -8,16 +8,17 @@ const int rx_queue_size = 10;       // Receive Queue size
 struct Canbus_previous_val {
     byte rpm[2]; // odometer info
     byte ext_temp;
-    byte doors;
+    byte disc_btn,doors;
     bool ign,ill,rear,brake; // I/O status
 };
 
 Canbus_previous_val CAN_OV;
 
 CAN_frame_t canMsgRcv;
+CAN_frame_t canMsgSend;
 
-void CAN1_loop() {
-  if (xQueueReceive(CAN_cfg.rx_queue, &rx_frame, 3 * portTICK_PERIOD_MS) == pdTRUE)
+void CAN1_loop() {    
+  if (xQueueReceive(CAN_cfg.rx_queue, &rx_frame, 3 * portTICK_PERIOD_MS) == pdTRUE) {
      switch (canMsgRcv.MsgID) {
         case 182: //0x0B6 rpm speed Fuel consumtion info (50ms)
           if (canMsgRcv.FIR.B.DLC == 8) {
@@ -54,13 +55,16 @@ void CAN1_loop() {
          if (canMsgRcv.data.u8[0] == 0x18) Car.AC_OFF =1; else Car.AC_OFF =0;
         break;
         case 543: //0x21F Radio remote control under the steering wheel
-         if (canMsgRcv.data.u8[0]&&1) //forward
-         if (canMsgRcv.data.u8[0]&&2) //backward
-         if (canMsgRcv.data.u8[0]&&16) //volume UP
-         if (canMsgRcv.data.u8[0]&&32) //volume DOWN
-         if (canMsgRcv.data.u8[0]&&64) //Source
-         //Car.??? = canMsgRcv.data.u8[1] //scroll value from disk selection
-           
+         if (canMsgRcv.data.u8[0]&&1) remote->SendButtonCode(NextTrack); //forward
+         if (canMsgRcv.data.u8[0]&&2) remote->SendButtonCode(PreviousTrack);//backward
+         if (canMsgRcv.data.u8[0]&&16) remote->SendButtonCode(VolumeUp);//volume UP
+         if (canMsgRcv.data.u8[0]&&32) remote->SendButtonCode(VolumeDown);//volume DOWN
+         if (canMsgRcv.data.u8[0]&&64) remote->SendButtonCode(Source);//Source
+         if (Car.disc_btn != canMsgRcv.data.u8[1]) { //scroll value from disk selection
+             
+             
+             
+         }
         break;
         case 544: //0x220 Door status
          if (canMsgRcv.data.u8[0] !=  CAN_OV.Doors) { 
@@ -100,6 +104,23 @@ void CAN1_loop() {
         default:
       
         break;
+    }
+    if ( Car.C_UPD_AC) {
+        // 1E3	7	1C 30 0D 0D 00 00 05 to be tested could be AC
+        
+        canMsgSend.FIR.B.FF = CAN_frame_std;
+        canMsgSend.MsgID = 0x1E3;
+        canMsgSend.FIR.B.DLC = 7;
+        canMsgSend.data.u8[0] = 0x1C; //sniffed values
+        canMsgSend.data.u8[1] = 0x30; //sniffed values
+        canMsgSend.data.u8[2] = Car.AC_L;
+        canMsgSend.data.u8[3] = Car.AC_R;
+        canMsgSend.data.u8[4] = 0x00; //sniffed values
+        canMsgSend.data.u8[5] = 0x00; //sniffed values
+        canMsgSend.data.u8[6] = 0x05; //sniffed values
+        ESP32Can.CANWriteFrame(&tx_frame);
+        Car.C_UPD_AC=false;
+    }
 }
     
     
