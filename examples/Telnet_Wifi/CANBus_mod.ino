@@ -4,11 +4,10 @@
 
 CAN_device_t CAN_cfg;                // CAN Config
 const int rx_queue_size = 10;       // Receive Queue size
-
 struct Canbus_previous_val {
     byte rpm[2]; // odometer info
-    byte ext_temp;
-    byte disc_btn,doors;
+    byte ext_temp,doors;
+    uint16_t disc_btn;
     bool ign,ill,rear,brake; // I/O status
 };
 
@@ -60,11 +59,13 @@ void CAN1_loop() {
          if (canMsgRcv.data.u8[0]&&16) remote->SendButtonCode(VolumeUp);//volume UP
          if (canMsgRcv.data.u8[0]&&32) remote->SendButtonCode(VolumeDown);//volume DOWN
          if (canMsgRcv.data.u8[0]&&64) remote->SendButtonCode(Source);//Source
-         if (Car.disc_btn != canMsgRcv.data.u8[1]) { //scroll value from disk selection
-             
-             
-             
-         }
+         uint16_t SrollVal = canMsgRcv.data.u8[1]; // need to be tested 
+            if (SrollVal <8 && Car.disc_btn > 200) SrollVal = SrollVal + 256; //prevent overflow change from 0 to 255 means -1
+            if (SrollVal >200 && Car.disc_btn < 8) Car.disc_btn = Car.disc_btn + 256; //prevent overflow change from 255 to 0 mean +1           
+            if (Car.disc_btn != SrollVal) { //scroll value from disk selection 
+                cd-change(SrollVal-Car.disc_btn); //change xtimes cd disc (max 7 pulses at time)
+                Car.disc_btn = SrollVal;
+            }
         break;
         case 544: //0x220 Door status
          if (canMsgRcv.data.u8[0] !=  CAN_OV.Doors) { 
@@ -268,3 +269,19 @@ void CAN1_setup() {
   // Init CAN Module
   ESP32Can.CANInit();
 }
+        
+void cd-change(int count) {
+    if (count < 8 & count >0) {
+        for (byte i = 1; i < count; i++) {
+            remote->SendButtonCode(NextAlbum);
+        }
+    }
+    count = -count;
+    if (count < 8 & count >0) {
+        for (byte i = 1; i < count; i++) {
+            remote->SendButtonCode(PreviousAlbum);
+        }
+    }
+}
+        
+        ;
