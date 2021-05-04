@@ -1,10 +1,10 @@
 #define HUnit_mod 
 #include <JunsunPSACANRemote.h>
 
-#define IO_HUenable      7 //Car ignition signal
-#define IO_HUrear        7 //reverse gear signal
-#define IO_HUbrake       7 //handbrake signal
-#define IO_HUill         7 //Illumimation signal
+#define IO_HUenable      15 //Car ignition signal
+#define IO_HUrear        2 //reverse gear signal
+#define IO_HUbrake       13 //handbrake signal
+#define IO_HUill         12 //Illumimation signal
 
 #define SERIAL_SPEED    19200
 JunsunPSACANRemote* remote;
