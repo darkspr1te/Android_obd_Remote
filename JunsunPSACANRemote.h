@@ -99,34 +99,34 @@ public:
 	#define SWC_KEY_MENU 0x02
 	#define SWC_KEY_MENU_UP 0x03
 	#define SWC_KEY_MENU_DOWN 0x04
-	#define SWC_KEY_OK 0x07;//OK
-	#define SWC_KEY_ESC 0x08;//ESC
-	#define SWC_KEY_MODE 0x10;//Mode
-	#define SWC_KEY_SRC 0x11;//Source
-	#define SWC_KEY_SEEK_DOWN 0x12;//Seek+
-	#define SWC_KEY_SEEK_UP 0x13;//Seek-
-	#define SWC_KEY_VOLUME_UP 0x14;//Volume+
-	#define SWC_KEY_VOLUME_DOWN 0x15;//Volume-
-	#define SWC_KEY_MUTE 0x16;//Mute
-	#define SWC_KEY_MEMO_UP 0x17;//上一曲
-	#define SWC_KEY_MEMO_DOWN 0x18;//下一曲
-	#define SWC_KEY_PAGE_SW 0x20;//电脑信息页切换
-	#define SWC_KEY_MENU4 0x21;//菜单
-	#define SWC_KEY_MEMO 0x22;//记忆速度界面
-	#define SWC_KEY_BT 0x23;//蓝牙按键
-	#define SWC_KEY_PUSH_TO_TALK 0x29;//
-	#define SWC_KEY_VEHICLE_SETTING 0x2A;//车身设置
-	#define SWC_KEY_VEHICLE_NAVI 0x2B;
-	#define SWC_KEY_MUSIC 0x2C;
-	#define SWC_KEY_BLUETOOTH 0x2D;
-	#define SWC_KEY_APPS 0x2E;
-	#define SWC_KEY_AIR_CONDTION_CONTROL 0x2F;
-	#define SWC_KEY_PHONE_ACCEPT 0x30;//电话接听	
-	#define SWC_KEY_PHONE_HANGUP 0x31;//电话挂断
-	#define SWC_KEY_NAVI 0x32;//Navi
-	#define SWC_KEY_RADIO 0x33;//收音
-	#define SWC_KEY_SETUP 0x34;//设置
-	#define SWC_KEY_ADDR 0x35;//Addr
+	#define SWC_KEY_OK 0x07 //OK
+	#define SWC_KEY_ESC 0x08 //ESC
+	#define SWC_KEY_MODE 0x10 //Mode
+	#define SWC_KEY_SRC 0x11 //Source
+	#define SWC_KEY_SEEK_DOWN 0x12 //Seek+
+	#define SWC_KEY_SEEK_UP 0x13 //Seek-
+	#define SWC_KEY_VOLUME_UP 0x14 //Volume+
+	#define SWC_KEY_VOLUME_DOWN 0x15 //Volume-
+	#define SWC_KEY_MUTE 0x16 //Mute
+	#define SWC_KEY_MEMO_UP 0x17 //上一曲
+	#define SWC_KEY_MEMO_DOWN 0x18 //下一曲
+	#define SWC_KEY_PAGE_SW 0x20 //电脑信息页切换
+	#define SWC_KEY_MENU4 0x21 //菜单
+	#define SWC_KEY_MEMO 0x22 //记忆速度界面
+	#define SWC_KEY_BT 0x23 //蓝牙按键
+	#define SWC_KEY_PUSH_TO_TALK 0x29 //
+	#define SWC_KEY_VEHICLE_SETTING 0x2A //车身设置
+	#define SWC_KEY_VEHICLE_NAVI 0x2B 
+	#define SWC_KEY_MUSIC 0x2C 
+	#define SWC_KEY_BLUETOOTH 0x2D 
+	#define SWC_KEY_APPS 0x2E 
+	#define SWC_KEY_AIR_CONDTION_CONTROL 0x2F 
+	#define SWC_KEY_PHONE_ACCEPT 0x30 //电话接听	
+	#define SWC_KEY_PHONE_HANGUP 0x31 //电话挂断
+	#define SWC_KEY_NAVI 0x32 //Navi
+	#define SWC_KEY_RADIO 0x33 //收音
+	#define SWC_KEY_SETUP 0x34 //设置
+	#define SWC_KEY_ADDR 0x35 //Addr
 	#define SWC_KEY_MEDIA 0x36
 	#define SWC_KEY_TRAF 0x37
 	#define SWC_KEY_UP 0x38
