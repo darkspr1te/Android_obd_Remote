@@ -37,7 +37,6 @@ private:
     Stream* serialPort;
     uint8_t outputBuffer[MAX_JUNSUN_MESSAGE_LENGTH];
 
-    void SendData(uint8_t message[], uint8_t messageLength);
 
 public:
     /*
@@ -56,6 +55,7 @@ public:
     void SendTripData1(uint16_t icon1Data, double icon2Data, uint8_t icon3Data);
     void SendTripData2(uint16_t icon1Data, double icon2Data, uint8_t icon3Data);
     void SendTemperature(int8_t temperature);
+    void SendData(uint8_t message[], uint8_t messageLength);
 };
 
 
