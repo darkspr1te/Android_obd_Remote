@@ -35,3 +35,8 @@ void update_IO() {
   digitalWrite(IO_HUill, Car.ill);// put !ill if nedds to reversed
   Car.H_UPD_IO=false; //updated
 }
+
+void HU_button(byte button) {
+  uint8_t data[] = { 0x02, button};
+  remote->SendData(data, JS_ARRAY_SIZE(data));
+}
