@@ -21,13 +21,13 @@ uint16_t SrollVal;
 void Disc(int count) {
     if (count < 8 & count >0) {
         for (byte i = 1; i <= count; i++) {
-            //remote->SendButtonCode(NextAlbum);
+           HU_button(SWC_KEY_MEMO_UP);  //remote->SendButtonCode(NextAlbum);
         }
     }
     count = -count;
     if (count < 8 & count >0) {
         for (byte i = 1; i <= count; i++) {
-            //remote->SendButtonCode(PreviousAlbum);
+            HU_button(SWC_KEY_MEMO_DOWN); //remote->SendButtonCode(PreviousAlbum);
         }
     }
 }
