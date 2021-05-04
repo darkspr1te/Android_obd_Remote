@@ -84,6 +84,12 @@ void CAN1_loop() {
          if (canMsgRcv.data.u8[0]&&16) //remote->SendButtonCode(VolumeUp);//volume UP
          if (canMsgRcv.data.u8[0]&&32) //remote->SendButtonCode(VolumeDown);//volume DOWN
          if (canMsgRcv.data.u8[0]&&64) //remote->SendButtonCode(Source);//Source*/
+            if (canMsgRcv.data.u8[0]&&1) HU_button(SWC_KEY_SEEK_UP); //forward
+            if (canMsgRcv.data.u8[0]&&2) HU_button(SWC_KEY_SEEK_DOWN);//backward
+            if (canMsgRcv.data.u8[0]&&16) HU_button(SWC_KEY_VOLUME_UP);//volume UP
+            if (canMsgRcv.data.u8[0]&&32) HU_button(SWC_KEY_VOLUME_DOWN);//volume DOWN
+            if (canMsgRcv.data.u8[0]&&64) HU_button(SWC_KEY_SRC);//Source
+             
          SrollVal = canMsgRcv.data.u8[1]; // need to be tested 
             if (SrollVal <8 && CAN_OV.disc_btn > 200) SrollVal = SrollVal + 256; //prevent overflow change from 0 to 255 means -1
             if (SrollVal >200 && CAN_OV.disc_btn < 8) CAN_OV.disc_btn = CAN_OV.disc_btn + 256; //prevent overflow change from 255 to 0 mean +1           
