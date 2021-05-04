@@ -37,6 +37,6 @@ void update_IO() {
 }
 
 void HU_button(byte button) {
-  uint8_t data[] = { 0x02, button};
-  remote->SendData(data, JS_ARRAY_SIZE(data));
+  uint8_t but[] = { 0x02, button};
+  remote->SendData(but, 2);
 }
