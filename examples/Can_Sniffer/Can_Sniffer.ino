@@ -1,3 +1,6 @@
+// canbus sniffer for esp32
+// to Serial
+
 #include <Arduino.h>
 #include <ESP32CAN.h> // https://github.com/miwagner/ESP32-Arduino-CAN
 #include <CAN_config.h>
