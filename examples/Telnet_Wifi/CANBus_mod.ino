@@ -167,8 +167,8 @@ void CAN1_loop() {
         */
     
     void  AC_decode_2004() { //see 12D too
-      Car.AC_L = canMsgRcv.data.u8[5]; //12D 
-      Car.AC_R = canMsgRcv.data.u8[6]; //12d 4 should be AC controller 64 for high
+      Car.AC_L = tamp_dec_2004(canMsgRcv.data.u8[5]);
+      Car.AC_R = tamp_dec_2004(canMsgRcv.data.u8[6]); //12d 4 should be AC controller 64 for high
       Car.AC_FAN = canMsgRcv.data.u8[2]; //0f:off 00>07 1 >8  /12d 1 0>64 (64=100 dec) maybe %
       // Position Fan
       switch (canMsgRcv.data.u8[3]) {
@@ -216,6 +216,13 @@ void CAN1_loop() {
       if (canMsgRcv.data.u8[0]&&128 ) Car.AC_SFAN=false; else Car.AC_SFAN=true; // Fan off
 
   }
+bool tamp_dec_2004(byte tin) {
+        if (tin ==  0) return 0; //	LO
+        if (tin >1 && tin <6) return ((tin + 13) * 10)  // 2>5	15>18°
+        if (tin >5 && tin <17) return ((tin + 31) * 5) // 6…16	18.5…23.5° (0.5° step)
+        if (tin >16 && tin <21) return ((tin + 7) * 10)  //17…20	24…27°
+        if (tin >20) return 255; //	LO
+}
 
 void  AC_decode_2010() {
       Car.AC_L = canMsgRcv.data.u8[3];
