@@ -4,6 +4,18 @@
 WebServer server(80);
 File fsUploadFile;
 
+void  handleButton() {
+  String message = "<h>Buttons Test</h>";
+  for (uint8_t i = 2; i < 35; i++) {
+  message += "<a href='/button?b="+ String(i)+ "'>button "+buttonname(i)+"</a><br>"; //String(i)
+  }
+  if (server.argName(0) == "b" ) {
+  HU_button(server.arg(0).toInt());
+  message += "<br> button "+server.arg(0)+" Pressed <br>";
+  }
+  server.send(200, "text/plain", message);
+}
+
 void ServerPages() {
   server.on("/root/format", HTTP_GET, []() {
     server.send(200, "text/plain", "Formating File System");
@@ -16,6 +28,7 @@ void ServerPages() {
       server.send(404, "text/plain", "FileNotFound");
     }
   });
+  server.on("/button", handleButton);
   //create file
   //server.on("/edit", HTTP_PUT, handleFileCreate);
   //delete file
@@ -151,4 +164,55 @@ void handleFileUpload() {
       fsUploadFile.close();
     }
   }
+}
+
+String buttonname(byte name) {
+  switch (name) {
+        case 2:
+        return "Menu";
+        break;
+        case 3:
+        return "Menu UP";
+        break;
+        case 4:
+        return "Menu DOWN";
+        break;
+        case 7:
+        return "OK";
+        break;
+        case 8:
+        return "ESC";
+        break;
+        case 16:
+        return "Mode";
+        break;
+        case 17:
+        return "Source";
+        break;
+        case 18:
+        return "Seek +";
+        break;
+        case 19:
+        return "Seek -";
+        break;
+        case 20:
+        return "Volume +";
+        break;
+        case 21:
+        return "Volume -";
+        break;
+        case 22:
+        return "Mute";
+        break;
+        case 23:
+        return "Memo +";
+        break;
+        case 24:
+        return "Memo -";
+        break;
+        case 35:
+        return "BT";
+        break;
+  }
+  return "??";
 }
