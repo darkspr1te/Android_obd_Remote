@@ -6,7 +6,7 @@ CAN_device_t CAN_cfg;                // CAN Config
 const int rx_queue_size = 10;       // Receive Queue size
 struct Canbus_previous_val {
     byte rpm[2]; // odometer info
-    byte ext_temp,Doors;
+    byte ext_temp,Doors,ver;
     uint16_t disc_btn;
     bool ign,ill,rear,brake; // I/O status
 };
